@@ -1,0 +1,21 @@
+from bs4 import BeautifulSoup
+from urllib2 import *
+import urllib2
+
+def grab_html(url):
+  html_doc = urlopen(url).read()
+  soup = BeautifulSoup(html_doc, "lxml")
+  resource_list = soup.find_all("div", class_="course-lecture-item-resource")
+ # print soup.prettify()
+  print len(resource_list)
+  for lecture in resource_list:
+    break 
+
+if __name__ == '__main__':
+  url = raw_input("Enter the url of the lectures page in coursera\n")
+  try:
+    grab_html(url)
+  except ValueError:
+    print "The URL is not valid"
+  except URLError:
+    print "Cannot access the URL. Try checking your Internet Connection."
