@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 from urllib2 import *
 import traceback
 import re
+import os
 
-DESKTOP = "/Users/saratsista/Desktop"
+DESKTOP = "/Users/saratsista/Desktop/Lecture" # Download files to a folder 'Lecture'
 
 def grab_html(url):
   ''' 
@@ -26,6 +27,18 @@ def download_file(url):
   # XXX:TODO 1. find out a way to download both typed and printed pdfs which have the same url
   # 	     2. Rename the mp4 to the name of the lecture
   #	     3. Download files of a lecture into respective folder
+  # Initially, check if directory 'Lecture' exists. If not create it.
+
+  # There's a race condition here - if the directory is created between the 'os.path.exists' and the 'os.makedirs' calls, 
+  # the os.makedirs will fail with an OSError. Using try except and the right error code from errno module gets rid of the 
+  # race condition and is cross-platform.
+  # URL: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary
+  if not os.path.exists(DESKTOP):
+    try:
+    	os.makedirs(DESKTOP)
+    except OSError as exception:
+	if exception.errno != errno.EEXIST:
+	  raise
   # First find out the type of file being downloaded from the url
   pattern = re.compile(".pptx|.pdf|[.]*txt|[.]*srt|.mp4")
   match = pattern.search(url)
